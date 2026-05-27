@@ -881,6 +881,13 @@
   border-color: var(--primary) transparent transparent;
 }
 
+.admin-section-heading {
+  font-size: 1.3rem;
+  color: var(--heading-color);
+  margin-bottom: 24px;
+  text-align: center;
+}
+
 .admin-loading p {
   color: var(--text-secondary);
 }

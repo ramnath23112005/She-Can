@@ -54,4 +54,13 @@ router.post(
   }
 );
 
+router.get('/newsletter', async (req, res) => {
+  try {
+    const subscribers = await Newsletter.find().sort({ subscribedAt: -1 });
+    res.json(subscribers);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch subscribers' });
+  }
+});
+
 module.exports = router;
