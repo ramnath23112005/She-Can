@@ -15,7 +15,7 @@ function Footer() {
     setSubscribing(true);
     setNewsletterStatus(null);
     try {
-      const res = await fetch('http://localhost:5000/api/newsletter', {
+      const res = await fetch('https://she-can-oxk3.onrender.com/api/newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: newsletterEmail }),

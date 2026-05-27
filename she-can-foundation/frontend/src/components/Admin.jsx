@@ -11,7 +11,7 @@ function Admin() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('http://localhost:5000/api/submissions');
+      const res = await fetch('https://she-can-oxk3.onrender.com/api/submissions');
       if (!res.ok) throw new Error('Failed to fetch');
       const data = await res.json();
       setSubmissions(data);
