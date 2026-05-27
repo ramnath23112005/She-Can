@@ -46,17 +46,6 @@ router.post(
           </div>
         `,
       }).catch(() => {});
-      transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: process.env.ADMIN_EMAIL,
-        subject: 'New Newsletter Subscription',
-        html: `
-          <h2>New Newsletter Subscription</h2>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Subscribed At:</strong> ${new Date().toLocaleString()}</p>
-        `,
-      }).catch(() => {});
-
       res.status(201).json({ message: 'Subscribed successfully!' });
     } catch (error) {
       console.error('Error saving subscription:', error);
