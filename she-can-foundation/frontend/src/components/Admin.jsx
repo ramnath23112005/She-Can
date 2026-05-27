@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faSync, faEnvelope, faPhone, faUser, faCalendar, faFileExcel } from '@fortawesome/free-solid-svg-icons';
+import * as XLSX from 'xlsx';
 
 function Admin() {
   const [submissions, setSubmissions] = useState([]);
@@ -46,7 +47,6 @@ function Admin() {
   };
 
   const downloadExcel = () => {
-    const XLSX = require('xlsx');
     const data = submissions.map((s) => ({
       Name: s.fullName,
       Email: s.email,
