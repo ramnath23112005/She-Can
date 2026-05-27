@@ -31,9 +31,8 @@ router.post(
       const subscription = new Newsletter({ email });
       await subscription.save();
 
-      await recordNewsletterToExcel({ email });
-
-      await transporter.sendMail({
+      recordNewsletterToExcel({ email }).catch(() => {});
+      transporter.sendMail({
         from: process.env.EMAIL_USER,
         to: email,
         subject: 'Welcome to She Can Foundation Newsletter!',
@@ -46,9 +45,8 @@ router.post(
             <p style="color: #666; font-size: 0.85rem;">If you didn't subscribe, you can ignore this email.</p>
           </div>
         `,
-      });
-
-      await transporter.sendMail({
+      }).catch(() => {});
+      transporter.sendMail({
         from: process.env.EMAIL_USER,
         to: process.env.ADMIN_EMAIL,
         subject: 'New Newsletter Subscription',
@@ -57,7 +55,7 @@ router.post(
           <p><strong>Email:</strong> ${email}</p>
           <p><strong>Subscribed At:</strong> ${new Date().toLocaleString()}</p>
         `,
-      });
+      }).catch(() => {});
 
       res.status(201).json({ message: 'Subscribed successfully!' });
     } catch (error) {

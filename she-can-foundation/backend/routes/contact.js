@@ -34,9 +34,8 @@ router.post(
       const contact = new Contact({ fullName, email, phone, message });
       await contact.save();
 
-      await recordToExcel({ fullName, email, phone, message });
-
-      const mailOptions = {
+      recordToExcel({ fullName, email, phone, message }).catch(() => {});
+      transporter.sendMail({
         from: process.env.EMAIL_USER,
         to: process.env.ADMIN_EMAIL,
         subject: `New Volunteer Contact from ${fullName}`,
@@ -47,9 +46,7 @@ router.post(
           <p><strong>Phone:</strong> ${phone}</p>
           <p><strong>Message:</strong> ${message}</p>
         `,
-      };
-
-      await transporter.sendMail(mailOptions);
+      }).catch(() => {});
 
       res.status(201).json({ message: 'Thank you! We will get back to you soon.' });
     } catch (error) {
