@@ -1,18 +1,14 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const Contact = require('../models/Contact');
-const nodemailer = require('nodemailer');
+const sgMail = require('@sendgrid/mail');
 const { recordToExcel } = require('../utils/excelRecorder');
 
 const router = express.Router();
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+if (process.env.SENDGRID_API_KEY) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+}
 
 router.post(
   '/contact',
@@ -35,18 +31,20 @@ router.post(
       await contact.save();
 
       recordToExcel({ fullName, email, phone, message }).catch(() => {});
-      transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: process.env.ADMIN_EMAIL,
-        subject: `New Volunteer Contact from ${fullName}`,
-        html: `
-          <h2>New Contact Form Submission</h2>
-          <p><strong>Name:</strong> ${fullName}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Phone:</strong> ${phone}</p>
-          <p><strong>Message:</strong> ${message}</p>
-        `,
-      }).catch(() => {});
+      if (process.env.SENDGRID_API_KEY) {
+        sgMail.send({
+          from: process.env.EMAIL_USER,
+          to: process.env.ADMIN_EMAIL,
+          subject: `New Volunteer Contact from ${fullName}`,
+          html: `
+            <h2>New Contact Form Submission</h2>
+            <p><strong>Name:</strong> ${fullName}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Phone:</strong> ${phone}</p>
+            <p><strong>Message:</strong> ${message}</p>
+          `,
+        }).catch(() => {});
+      }
 
       res.status(201).json({ message: 'Thank you! We will get back to you soon.' });
     } catch (error) {
