@@ -845,8 +845,18 @@
   margin-bottom: 48px;
 }
 
-.refresh-btn {
+.admin-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
   margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.admin-actions .btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #fff;
+  border: none;
 }
 
 .spin {

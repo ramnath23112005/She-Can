@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faSync, faEnvelope, faPhone, faUser, faCalendar } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faSync, faEnvelope, faPhone, faUser, faCalendar, faFileExcel } from '@fortawesome/free-solid-svg-icons';
 
 function Admin() {
   const [submissions, setSubmissions] = useState([]);
@@ -45,16 +45,36 @@ function Admin() {
     });
   };
 
+  const downloadExcel = () => {
+    const XLSX = require('xlsx');
+    const data = submissions.map((s) => ({
+      Name: s.fullName,
+      Email: s.email,
+      Phone: s.phone,
+      Message: s.message,
+      Submitted: new Date(s.createdAt).toLocaleString(),
+    }));
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(data);
+    XLSX.utils.book_append_sheet(wb, ws, 'Submissions');
+    XLSX.writeFile(wb, 'submissions.xlsx');
+  };
+
   return (
     <section className="admin-section section">
       <div className="container">
         <div className="admin-header" data-aos="fade-up">
           <h2 className="section-title">Admin Dashboard</h2>
           <p className="section-subtitle">View all volunteer contact submissions</p>
-          <button className="btn btn-outline refresh-btn" onClick={fetchSubmissions}>
-            <FontAwesomeIcon icon={faSync} className={loading ? 'spin' : ''} />
-            Refresh
-          </button>
+          <div className="admin-actions">
+            <button className="btn btn-outline refresh-btn" onClick={fetchSubmissions}>
+              <FontAwesomeIcon icon={faSync} className={loading ? 'spin' : ''} />
+              Refresh
+            </button>
+            <button className="btn btn-primary" onClick={downloadExcel} disabled={submissions.length === 0}>
+              <FontAwesomeIcon icon={faFileExcel} /> Download Excel
+            </button>
+          </div>
         </div>
 
         {error && (
